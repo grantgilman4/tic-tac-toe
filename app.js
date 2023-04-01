@@ -17,7 +17,7 @@ const idxFinder = {
   6: [2,0], 7: [2,1], 8: [2,2]
 };
 
-function resetState(parent) {
+function resetState() {
   state.board =  [ 
     [null, null, null],
     [null, null, null],
@@ -28,18 +28,19 @@ function resetState(parent) {
   state.p1Value = '';
   state.p2Value = '';
   while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
+  parent.removeChild(parent.firstChild);
   }
   render();
+  initPlayButton();
 };
 
-//**DOM Selectors */
 const body = document.querySelector('body');
 const board = document.createElement('main');
 board.id = 'board';
 
 //main element
 function renderBoard() {
+  board.innerHTML = "";
   for(let i =0; i < 9; i++) {
     const tile = document.createElement('div');
     tile.className = 'tile';
@@ -89,7 +90,6 @@ title.innerHTML = "Tic-Tac-Toe";
 
 function render() {
   renderPlayer()
-
 };
 render();
 
@@ -137,6 +137,7 @@ function getPlayerNames() {
 };
 
 const turnPrompt = document.querySelector('h3');
+
 function assignPlayerChar() {
   let p1char = Math.floor(Math.random() * (state.players.length));
   state.p1Value = state.players[p1char];
@@ -149,26 +150,26 @@ function assignPlayerChar() {
   }
 }
 
-const playButton = document.getElementById('play');
-playButton.addEventListener('click', function () {
-  getPlayerNames();
-  assignPlayerChar();
-  if(state.p1Name === '' || state.p2Name === '') {
-    alert("You need player names before starting the game!");
-  } else if (state.p1Name === state.p2Name) {
-    alert("Player names can't be the same!");
-  } else {
-    renderBoard();
-    playButton.classList.toggle('display');
-    
-    //when players have been entered and board is rendered, disable inputs and start game button until new game button is clicked
-  }
-});
+function initPlayButton() {
+  const playButton = document.getElementById('play');
+  playButton.addEventListener('click', function () {
+    getPlayerNames();
+    assignPlayerChar();
+    if(state.p1Name === '' || state.p2Name === '') {
+      alert("You need player names before starting the game!");
+    } else if (state.p1Name === state.p2Name) {
+      alert("Player names can't be the same!");
+    } else {
+      renderBoard();
+      playButton.classList.toggle('display');
+    }
+  });
+};
 
 const reset = document.getElementById('reset');
 reset.addEventListener('click', () => {
-  resetState(body);
-
+  renderBoard(body);
+  
 });
 
 function checkWin() {
@@ -212,3 +213,5 @@ function checkTie() {
     alert('TIE GAME...click New Game to try again.')
   }
 }
+
+initPlayButton();
